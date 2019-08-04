@@ -15,6 +15,7 @@ type Props = {
   visible: boolean,
   isFirstStep: boolean,
   isLastStep: boolean,
+  disableSkip: boolean,
   easing: ?func,
   animationDuration: ?number,
   tooltipComponent: ?React$Component,
@@ -278,6 +279,7 @@ class CopilotModal extends Component<Props, State> {
           handlePrev={this.handlePrev}
           handleStop={this.handleStop}
           labels={this.props.labels}
+		  disableSkip={this.props.disableSkip}
         />
       </Animated.View>,
     ];
