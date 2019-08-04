@@ -31,7 +31,8 @@ export default StyleSheet.create({
     overflow: 'hidden',
   },
   tooltipText: {
-
+	fontSize: 16,
+	textAlign: 'center',
   },
   tooltipContainer: {
     flex: 1,
@@ -53,7 +54,7 @@ export default StyleSheet.create({
     backgroundColor: '#27ae60',
   },
   stepNumberText: {
-    fontSize: 10,
+    fontSize: 13,
     backgroundColor: 'transparent',
     color: '#FFFFFF',
   },
