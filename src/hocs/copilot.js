@@ -42,6 +42,9 @@ const copilot = ({
 } = {}) =>
   (WrappedComponent) => {
     class Copilot extends Component<any, State> {
+	  minimumStep: ?Step = null;
+	  maxiumStep: ?Step = null;
+	  
       state = {
         steps: {},
         currentStep: null,
@@ -98,9 +101,9 @@ const copilot = ({
 
       eventEmitter = mitt();
 
-      isFirstStep = (): boolean => this.state.currentStep === this.getFirstStep();
+      isFirstStep = (): boolean => this.state.currentStep === (this.minimumStep ? this.minimumStep : this.getFirstStep());
 
-      isLastStep = (): boolean => this.state.currentStep === this.getLastStep();
+      isLastStep = (): boolean => this.state.currentStep === (this.maxiumStep ? this.maxiumStep :this.getLastStep());
 
       registerStep = (step: Step): void => {
         this.setState(({ steps }) => ({
@@ -130,12 +133,18 @@ const copilot = ({
         await this.setCurrentStep(this.getPrevStep());
       }
 
-      start = async (fromStep?: string): void => {
+      start = async (options?: {fromStep?:string, 
+							   minStep?: string,
+							   maxStep?: string} = {} ): void => {
         const { steps } = this.state;
+		const { fromStep, minStep, maxStep } = options;
 
         const currentStep = fromStep
           ? steps[fromStep]
           : this.getFirstStep();
+		  
+		this.minimumStep = minStep ? steps[minStep] : null;
+		this.maxiumStep = maxStep ? steps[maxStep] : null;
 
         if (this.startTries > MAX_START_TRIES) {
           this.startTries = 0;
@@ -144,7 +153,7 @@ const copilot = ({
 
         if (!currentStep) {
           this.startTries += 1;
-          requestAnimationFrame(() => this.start(fromStep));
+          requestAnimationFrame(() => this.start(options));
         } else {
           this.eventEmitter.emit('start');
           await this.setCurrentStep(currentStep);
