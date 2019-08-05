@@ -45,6 +45,7 @@ const copilot = ({
 	  minimumStep: ?Step = null;
 	  maxiumStep: ?Step = null;
 	  disableSkip: ?boolean = false;
+	  overrideLabels: Object;
 	  
       state = {
         steps: {},
@@ -137,9 +138,10 @@ const copilot = ({
       start = async (options?: {fromStep?:string, 
 							   minStep?: string,
 							   maxStep?: string,
-							   disableSkip?: boolean} = {} ): void => {
+							   disableSkip?: boolean,
+							   labels: Object} = {} ): void => {
         const { steps } = this.state;
-		const { fromStep, minStep, maxStep, disableSkip } = options;
+		const { fromStep, minStep, maxStep, disableSkip, labels } = options;
 
         const currentStep = fromStep
           ? steps[fromStep]
@@ -148,6 +150,7 @@ const copilot = ({
 		this.minimumStep = minStep ? steps[minStep] : null;
 		this.maxiumStep = maxStep ? steps[maxStep] : null;
 		this.disableSkip = disableSkip;
+		this.overrideLabels = labels;
 		
         if (this.startTries > MAX_START_TRIES) {
           this.startTries = 0;
@@ -202,7 +205,7 @@ const copilot = ({
               currentStepNumber={this.getStepNumber()}
               currentStep={this.state.currentStep}
 			  disableSkip={this.disableSkip}
-              labels={labels}
+              labels={this.overrideLabels | labels}
               stepNumberComponent={stepNumberComponent}
               tooltipComponent={tooltipComponent}
               overlay={overlay}
